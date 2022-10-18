@@ -314,6 +314,51 @@ impl Iterator {
     self.offset = 2 * self.offset + 1;
     self.index
   }
+
+  /// Move to the next tree from the current position and return
+  /// new index.
+  ///
+  /// ## Examples
+  /// ```rust
+  /// assert_eq!(flat_tree::Iterator::new(0).next_tree(), 2);
+  /// assert_eq!(flat_tree::Iterator::new(1).next_tree(), 4);
+  /// assert_eq!(flat_tree::Iterator::new(3).next_tree(), 8);
+  /// assert_eq!(flat_tree::Iterator::new(7).next_tree(), 16);
+  /// ```
+  #[inline]
+  pub fn next_tree(&mut self) -> u64 {
+    self.index = self.index + self.factor / 2 + 1;
+    self.offset = self.index / 2;
+    self.factor = 2;
+    self.index
+  }
+
+  /// Move to the previous tree from the current position and return
+  /// new index.
+  ///
+  /// ## Examples
+  /// ```rust
+  /// assert_eq!(flat_tree::Iterator::new(0).prev_tree(), 0);
+  /// assert_eq!(flat_tree::Iterator::new(1).prev_tree(), 0);
+  /// assert_eq!(flat_tree::Iterator::new(2).prev_tree(), 0);
+  /// assert_eq!(flat_tree::Iterator::new(3).prev_tree(), 0);
+  /// assert_eq!(flat_tree::Iterator::new(7).prev_tree(), 0);
+  /// assert_eq!(flat_tree::Iterator::new(5).prev_tree(), 2);
+  /// assert_eq!(flat_tree::Iterator::new(9).prev_tree(), 6);
+  /// assert_eq!(flat_tree::Iterator::new(11).prev_tree(), 6);
+  /// ```
+  #[inline]
+  pub fn prev_tree(&mut self) -> u64 {
+    if self.offset == 0 {
+      self.index = 0;
+      self.factor = 2;
+    } else {
+      self.index = self.index - self.factor / 2 - 1;
+      self.offset = self.index / 2;
+      self.factor = 2;
+    }
+    self.index
+  }
 }
 
 impl iter::Iterator for Iterator {
