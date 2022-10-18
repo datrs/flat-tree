@@ -242,6 +242,22 @@ pub const fn count(i: u64) -> u64 {
   (2 << depth) - 1
 }
 
+/// Returns how many leaves are in the tree that the node spans.
+///
+/// ## Examples
+/// ```rust
+/// assert_eq!(flat_tree::count_leaves(0), 1);
+/// assert_eq!(flat_tree::count_leaves(1), 2);
+/// assert_eq!(flat_tree::count_leaves(3), 4);
+/// assert_eq!(flat_tree::count_leaves(5), 2);
+/// assert_eq!(flat_tree::count_leaves(23), 8);
+/// assert_eq!(flat_tree::count_leaves(27), 4);
+/// ```
+#[inline]
+pub const fn count_leaves(i: u64) -> u64 {
+  (count(i) + 1) / 2
+}
+
 /// Returns a list of all the full roots (subtrees where all nodes have either 2
 /// or 0 children) `<` index.
 ///

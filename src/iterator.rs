@@ -147,6 +147,43 @@ impl Iterator {
     }
   }
 
+  /// Returns how many nodes are in the tree of the current position.
+  ///
+  /// ## Examples
+  /// ```rust
+  /// assert_eq!(flat_tree::Iterator::new(0).count_nodes(), 1);
+  /// assert_eq!(flat_tree::Iterator::new(1).count_nodes(), 3);
+  /// assert_eq!(flat_tree::Iterator::new(3).count_nodes(), 7);
+  /// assert_eq!(flat_tree::Iterator::new(5).count_nodes(), 3);
+  /// assert_eq!(flat_tree::Iterator::new(23).count_nodes(), 15);
+  /// assert_eq!(flat_tree::Iterator::new(27).count_nodes(), 7);
+  /// ```
+  #[inline]
+  pub fn count_nodes(&self) -> u64 {
+    if is_even(self.index) {
+      1
+    } else {
+      self.factor - 1
+    }
+  }
+
+  /// Returns how many leaves are in the tree of the current position.
+  ///
+  /// ## Examples
+  /// ```rust
+  /// assert_eq!(flat_tree::Iterator::new(0).count_leaves(), 1);
+  /// assert_eq!(flat_tree::Iterator::new(1).count_leaves(), 2);
+  /// assert_eq!(flat_tree::Iterator::new(2).count_leaves(), 1);
+  /// assert_eq!(flat_tree::Iterator::new(3).count_leaves(), 4);
+  /// assert_eq!(flat_tree::Iterator::new(5).count_leaves(), 2);
+  /// assert_eq!(flat_tree::Iterator::new(23).count_leaves(), 8);
+  /// assert_eq!(flat_tree::Iterator::new(27).count_leaves(), 4);
+  /// ```
+  #[inline]
+  pub fn count_leaves(&self) -> u64 {
+    (self.count_nodes() + 1) / 2
+  }
+
   /// Move the cursor and get the previous item from the current position.
   ///
   /// ## Examples
