@@ -60,7 +60,7 @@ In some cases it is also useful to calculate an **offset**. Indexes `0`, `1`, `3
                  7
        3                  (11)
   1        (5)        9          13
-0   (2)   4   6    10   12    14    15
+0   (2)   4   6    8    10    12    14
 ```
 
 This module exposes a series of functions to help you build and maintain
