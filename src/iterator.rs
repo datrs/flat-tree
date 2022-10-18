@@ -104,6 +104,49 @@ impl Iterator {
     is_odd(self.offset)
   }
 
+  /// Check if the the iterator contains given index.
+  ///
+  ///  /// ## Examples
+  /// ```rust
+  /// let mut iter = flat_tree::Iterator::new(3);
+  /// assert_eq!(iter.contains(0), true);
+  /// assert_eq!(iter.contains(1), true);
+  /// assert_eq!(iter.contains(2), true);
+  /// assert_eq!(iter.contains(3), true);
+  /// assert_eq!(iter.contains(4), true);
+  /// assert_eq!(iter.contains(5), true);
+  /// assert_eq!(iter.contains(6), true);
+  /// assert_eq!(iter.contains(7), false);
+  /// assert_eq!(iter.contains(8), false);
+  /// let mut iter = flat_tree::Iterator::new(9);
+  /// assert_eq!(iter.contains(8), true);
+  /// assert_eq!(iter.contains(9), true);
+  /// assert_eq!(iter.contains(10), true);
+  /// assert_eq!(iter.contains(6), false);
+  /// assert_eq!(iter.contains(7), false);
+  /// assert_eq!(iter.contains(12), false);
+  /// assert_eq!(iter.contains(13), false);
+  /// let mut iter = flat_tree::Iterator::new(8);
+  /// assert_eq!(iter.contains(8), true);
+  /// assert_eq!(iter.contains(6), false);
+  /// assert_eq!(iter.contains(7), false);
+  /// assert_eq!(iter.contains(9), false);
+  /// assert_eq!(iter.contains(10), false);
+  /// ```
+  #[inline]
+  pub fn contains(&self, index: u64) -> bool {
+    if index > self.index {
+      index < (self.index + self.factor / 2)
+    } else {
+      if index < self.index {
+        let comp = self.factor / 2;
+        self.index < comp || index > (self.index - comp)
+      } else {
+        true
+      }
+    }
+  }
+
   /// Move the cursor and get the previous item from the current position.
   ///
   /// ## Examples
