@@ -233,6 +233,8 @@ pub fn spans(i: u64) -> (u64, u64) {
 /// assert_eq!(flat_tree::count(1), 3);
 /// assert_eq!(flat_tree::count(3), 7);
 /// assert_eq!(flat_tree::count(5), 3);
+/// assert_eq!(flat_tree::count(7), 15);
+/// assert_eq!(flat_tree::count(15), 31);
 /// assert_eq!(flat_tree::count(23), 15);
 /// assert_eq!(flat_tree::count(27), 7);
 /// ```
@@ -250,6 +252,7 @@ pub const fn count(i: u64) -> u64 {
 /// assert_eq!(flat_tree::count_leaves(1), 2);
 /// assert_eq!(flat_tree::count_leaves(3), 4);
 /// assert_eq!(flat_tree::count_leaves(5), 2);
+/// assert_eq!(flat_tree::count_leaves(15), 16);
 /// assert_eq!(flat_tree::count_leaves(23), 8);
 /// assert_eq!(flat_tree::count_leaves(27), 4);
 /// ```
@@ -295,6 +298,11 @@ pub const fn count_leaves(i: u64) -> u64 {
 /// let mut nodes = Vec::with_capacity(16);
 /// full_roots(16, &mut nodes);
 /// assert_eq!(nodes, [7]);
+///
+/// let mut nodes = Vec::with_capacity(16);
+/// full_roots(30, &mut nodes);
+/// assert_eq!(nodes, [7, 19, 25, 28]);
+
 /// ```
 #[inline]
 pub fn full_roots(i: u64, nodes: &mut Vec<u64>) {

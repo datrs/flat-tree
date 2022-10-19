@@ -22,9 +22,11 @@ You can represent a binary tree in a simple flat list using the following
 structure:
 
 ```text
-      3
-  1       5
-0   2   4   6  ...
+                                    15
+              7                                             23
+      3                 11                      19                      27
+  1       5        9          13          17          21          25          29
+0   2   4   6   8    10    12    14    16    18    20    22    24    26    28    30...
 ```
 
 Each number represents an **index** in a flat list. So a tree:
