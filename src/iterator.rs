@@ -359,6 +359,44 @@ impl Iterator {
     }
     self.index
   }
+
+  /// Move cursor to the full root of given leaf index that the iterator
+  /// index is a part of. If the cursor is already there, nothing is
+  /// changed.
+  ///
+  /// Returns true if a full root exists (moved or not), false if
+  /// there are no full roots for the cursor or if given index is not a
+  /// leaf.
+  ///
+  /// See full_roots() for what is meant by a full root.
+  ///
+  /// ## Examples
+  /// ```rust
+  /// let mut iter = flat_tree::Iterator::new(0);
+  /// assert_eq!(iter.full_root(0), false);
+  /// assert_eq!(iter.full_root(22), true);
+  /// assert_eq!(iter.index(), 7);
+  /// assert_eq!(iter.next_tree(), 16);
+  /// assert_eq!(iter.full_root(22), true);
+  /// assert_eq!(iter.index(), 17);
+  /// assert_eq!(iter.next_tree(), 20);
+  /// assert_eq!(iter.full_root(22), true);
+  /// assert_eq!(iter.index(), 20);
+  /// assert_eq!(iter.next_tree(), 22);
+  /// assert_eq!(iter.full_root(22), false);
+  /// ```
+  #[inline]
+  pub fn full_root(&mut self, index: u64) -> bool {
+    if index <= self.index || is_odd(self.index) {
+      return false;
+    }
+    while index > self.index + self.factor + self.factor / 2 {
+      self.index += self.factor / 2;
+      self.factor *= 2;
+      self.offset /= 2;
+    }
+    true
+  }
 }
 
 impl iter::Iterator for Iterator {
