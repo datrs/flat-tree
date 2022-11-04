@@ -106,7 +106,7 @@ impl Iterator {
 
   /// Check if the the iterator contains given index.
   ///
-  ///  /// ## Examples
+  /// ## Examples
   /// ```rust
   /// let mut iter = flat_tree::Iterator::new(3);
   /// assert_eq!(iter.contains(0), true);
@@ -118,6 +118,7 @@ impl Iterator {
   /// assert_eq!(iter.contains(6), true);
   /// assert_eq!(iter.contains(7), false);
   /// assert_eq!(iter.contains(8), false);
+  ///
   /// let mut iter = flat_tree::Iterator::new(9);
   /// assert_eq!(iter.contains(8), true);
   /// assert_eq!(iter.contains(9), true);
@@ -126,6 +127,7 @@ impl Iterator {
   /// assert_eq!(iter.contains(7), false);
   /// assert_eq!(iter.contains(12), false);
   /// assert_eq!(iter.contains(13), false);
+  ///
   /// let mut iter = flat_tree::Iterator::new(8);
   /// assert_eq!(iter.contains(8), true);
   /// assert_eq!(iter.contains(6), false);
