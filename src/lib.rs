@@ -1,6 +1,57 @@
-#![cfg_attr(feature = "nightly", deny(missing_docs))]
-#![cfg_attr(feature = "nightly", feature(external_doc))]
-#![cfg_attr(feature = "nightly", doc(include = "../README.md"))]
+#![forbid(missing_docs)]
+#![cfg_attr(test, deny(warnings))]
+#![doc(test(attr(deny(warnings))))]
+//! # Series of functions to map a binary tree to a list
+//!
+//! You can represent a binary tree in a simple flat list using the following
+//! structure:
+//!
+//! ```text
+//!                                     15
+//!               7                                             23
+//!       3                 11                      19                      27
+//!   1       5        9          13          17          21          25          29
+//! 0   2   4   6   8    10    12    14    16    18    20    22    24    26    28    30...
+//! ```
+//!
+//! Each number represents an **index** in a flat list. So a tree:
+//!
+//! ```text
+//!       A
+//!   B       C
+//! D   E   F   G  ...
+//! ```
+//!
+//! would be represented as a list: `[D B E A F C G]`
+//!
+//! Furthermore, indexes `0`, `2`, `4`, `6` are on **depth** `0`. `1`, `5`, `9` on depth `1`. And so forth.
+//!
+//! ```text
+//! depth = 2  ^        3
+//! depth = 1  |    1       5
+//! depth = 0  |  0   2   4   6  ...
+//! ```
+//!
+//! In some cases it is also useful to calculate an **offset**. Indexes `0`, `1`, `3`, `7` have an offset `0`:
+//!
+//! ```text
+//!                 (7)
+//!        (3)
+//!   (1)       5
+//! (0)   2   4   6      ...
+//! ```
+//!
+//! `2`, `5`, `11`, `23` offset `1`:
+//!
+//! ```text
+//!                  7
+//!        3                  (11)
+//!   1        (5)        9          13
+//! 0   (2)   4   6    8    10    12    14
+//! ```
+//!
+//! This module exposes a series of functions to help you build and maintain
+//! this data structure.
 
 mod iterator;
 
