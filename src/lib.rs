@@ -359,10 +359,8 @@ pub const fn count_leaves(i: u64) -> u64 {
 pub fn full_roots(i: u64, nodes: &mut Vec<u64>) {
   assert!(
     is_even(i),
-    format!(
-      "You can only look up roots for depth 0 blocks, got index {}",
-      i
-    )
+    "You can only look up roots for depth 0 blocks, got index {}",
+    i
   );
   let mut tmp = i >> 1;
   let mut offset = 0;
@@ -398,18 +396,18 @@ mod tests {
 
   #[test]
   fn test_is_even() {
-    assert_eq!(is_even(0), true);
-    assert_eq!(is_even(1), false);
-    assert_eq!(is_even(2), true);
-    assert_eq!(is_even(3), false);
+    assert!(is_even(0));
+    assert!(!is_even(1));
+    assert!(is_even(2));
+    assert!(!is_even(3));
   }
 
   #[test]
   fn test_is_odd() {
-    assert_eq!(is_odd(0), false);
-    assert_eq!(is_odd(1), true);
-    assert_eq!(is_odd(2), false);
-    assert_eq!(is_odd(3), true);
+    assert!(!is_odd(0));
+    assert!(is_odd(1));
+    assert!(!is_odd(2));
+    assert!(is_odd(3));
   }
 
   #[test]

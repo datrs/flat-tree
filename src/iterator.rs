@@ -108,7 +108,7 @@ impl Iterator {
   ///
   /// ## Examples
   /// ```rust
-  /// let mut iter = flat_tree::Iterator::new(3);
+  /// let iter = flat_tree::Iterator::new(3);
   /// assert_eq!(iter.contains(0), true);
   /// assert_eq!(iter.contains(1), true);
   /// assert_eq!(iter.contains(2), true);
@@ -119,7 +119,7 @@ impl Iterator {
   /// assert_eq!(iter.contains(7), false);
   /// assert_eq!(iter.contains(8), false);
   ///
-  /// let mut iter = flat_tree::Iterator::new(9);
+  /// let iter = flat_tree::Iterator::new(9);
   /// assert_eq!(iter.contains(8), true);
   /// assert_eq!(iter.contains(9), true);
   /// assert_eq!(iter.contains(10), true);
@@ -128,7 +128,7 @@ impl Iterator {
   /// assert_eq!(iter.contains(12), false);
   /// assert_eq!(iter.contains(13), false);
   ///
-  /// let mut iter = flat_tree::Iterator::new(8);
+  /// let iter = flat_tree::Iterator::new(8);
   /// assert_eq!(iter.contains(8), true);
   /// assert_eq!(iter.contains(6), false);
   /// assert_eq!(iter.contains(7), false);
@@ -136,16 +136,15 @@ impl Iterator {
   /// assert_eq!(iter.contains(10), false);
   /// ```
   #[inline]
+  #[allow(clippy::comparison_chain)]
   pub fn contains(&self, index: u64) -> bool {
     if index > self.index {
       index < (self.index + self.factor / 2)
+    } else if index < self.index {
+      let comp = self.factor / 2;
+      self.index < comp || index > (self.index - comp)
     } else {
-      if index < self.index {
-        let comp = self.factor / 2;
-        self.index < comp || index > (self.index - comp)
-      } else {
-        true
-      }
+      true
     }
   }
 
@@ -424,7 +423,7 @@ fn two_pow(n: u64) -> u64 {
   if n < 31 {
     1 << n
   } else {
-    ((1 << 30) * (1 << (n - 30)))
+    (1 << 30) * (1 << (n - 30))
   }
 }
 

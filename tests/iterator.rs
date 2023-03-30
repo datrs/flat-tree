@@ -5,8 +5,8 @@ fn iterator() {
   let mut iterator = flat_tree::Iterator::default();
   assert_eq!(iterator.index(), 0);
   assert_eq!(iterator.prev(), 0);
-  assert_eq!(iterator.is_left(), true);
-  assert_eq!(iterator.is_right(), false);
+  assert!(iterator.is_left());
+  assert!(!iterator.is_right());
   assert_eq!(iterator.parent(), 1);
   assert_eq!(iterator.offset(), 0);
   assert_eq!(iterator.parent(), 3);
@@ -16,8 +16,8 @@ fn iterator() {
   assert_eq!(iterator.right_child(), 11);
   assert_eq!(iterator.left_child(), 9);
   assert_eq!(iterator.next(), Some(13));
-  assert_eq!(iterator.is_left(), false);
-  assert_eq!(iterator.is_right(), true);
+  assert!(!iterator.is_left());
+  assert!(iterator.is_right());
   assert_eq!(iterator.left_span(), 12);
   assert_eq!(iterator.next(), Some(14));
   assert_eq!(iterator.next(), Some(16));
