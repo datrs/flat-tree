@@ -1,6 +1,6 @@
 [package]
 name = "flat-tree"
-version = "6.0.0"
+version = "6.1.0-alpha.0"
 description = "Series of functions to map a binary tree to a list"
 authors = ["Mathias Buus <mathiasbuus@gmail.com>", "Timo Tiuraniemi <timo.tiuraniemi@iki.fi>"]
 repository = "https://github.com/datrs/flat-tree"
