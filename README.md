@@ -14,8 +14,8 @@ Map a binary tree to a list. Adapted from
 
 [1]: https://img.shields.io/crates/v/flat-tree.svg?style=flat-square
 [2]: https://crates.io/crates/flat-tree
-[3]: https://img.shields.io/travis/datrs/flat-tree.svg?style=flat-square
-[4]: https://travis-ci.org/datrs/flat-tree
+[3]: https://github.com/datrs/flat-tree/actions/workflows/ci.yml/badge.svg
+[4]: https://github.com/datrs/flat-tree/actions
 [5]: https://img.shields.io/crates/d/flat-tree.svg?style=flat-square
 [6]: https://crates.io/crates/flat-tree
 [7]: https://docs.rs/flat-tree/badge.svg
