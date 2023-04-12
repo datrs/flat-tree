@@ -1,6 +1,57 @@
-#![cfg_attr(feature = "nightly", deny(missing_docs))]
-#![cfg_attr(feature = "nightly", feature(external_doc))]
-#![cfg_attr(feature = "nightly", doc(include = "../README.md"))]
+#![forbid(missing_docs)]
+#![cfg_attr(test, deny(warnings))]
+#![doc(test(attr(deny(warnings))))]
+//! # Series of functions to map a binary tree to a list
+//!
+//! You can represent a binary tree in a simple flat list using the following
+//! structure:
+//!
+//! ```text
+//!                                     15
+//!               7                                             23
+//!       3                 11                      19                      27
+//!   1       5        9          13          17          21          25          29
+//! 0   2   4   6   8    10    12    14    16    18    20    22    24    26    28    30...
+//! ```
+//!
+//! Each number represents an **index** in a flat list. So a tree:
+//!
+//! ```text
+//!       A
+//!   B       C
+//! D   E   F   G  ...
+//! ```
+//!
+//! would be represented as a list: `[D B E A F C G]`
+//!
+//! Furthermore, indexes `0`, `2`, `4`, `6` are on **depth** `0`. `1`, `5`, `9` on depth `1`. And so forth.
+//!
+//! ```text
+//! depth = 2  ^        3
+//! depth = 1  |    1       5
+//! depth = 0  |  0   2   4   6  ...
+//! ```
+//!
+//! In some cases it is also useful to calculate an **offset**. Indexes `0`, `1`, `3`, `7` have an offset `0`:
+//!
+//! ```text
+//!                 (7)
+//!        (3)
+//!   (1)       5
+//! (0)   2   4   6      ...
+//! ```
+//!
+//! `2`, `5`, `11`, `23` offset `1`:
+//!
+//! ```text
+//!                  7
+//!        3                  (11)
+//!   1        (5)        9          13
+//! 0   (2)   4   6    8    10    12    14
+//! ```
+//!
+//! This module exposes a series of functions to help you build and maintain
+//! this data structure.
 
 mod iterator;
 
@@ -233,6 +284,8 @@ pub fn spans(i: u64) -> (u64, u64) {
 /// assert_eq!(flat_tree::count(1), 3);
 /// assert_eq!(flat_tree::count(3), 7);
 /// assert_eq!(flat_tree::count(5), 3);
+/// assert_eq!(flat_tree::count(7), 15);
+/// assert_eq!(flat_tree::count(15), 31);
 /// assert_eq!(flat_tree::count(23), 15);
 /// assert_eq!(flat_tree::count(27), 7);
 /// ```
@@ -240,6 +293,23 @@ pub fn spans(i: u64) -> (u64, u64) {
 pub const fn count(i: u64) -> u64 {
   let depth = self::depth(i);
   (2 << depth) - 1
+}
+
+/// Returns how many leaves are in the tree that the node spans.
+///
+/// ## Examples
+/// ```rust
+/// assert_eq!(flat_tree::count_leaves(0), 1);
+/// assert_eq!(flat_tree::count_leaves(1), 2);
+/// assert_eq!(flat_tree::count_leaves(3), 4);
+/// assert_eq!(flat_tree::count_leaves(5), 2);
+/// assert_eq!(flat_tree::count_leaves(15), 16);
+/// assert_eq!(flat_tree::count_leaves(23), 8);
+/// assert_eq!(flat_tree::count_leaves(27), 4);
+/// ```
+#[inline]
+pub const fn count_leaves(i: u64) -> u64 {
+  (count(i) + 1) / 2
 }
 
 /// Returns a list of all the full roots (subtrees where all nodes have either 2
@@ -279,15 +349,18 @@ pub const fn count(i: u64) -> u64 {
 /// let mut nodes = Vec::with_capacity(16);
 /// full_roots(16, &mut nodes);
 /// assert_eq!(nodes, [7]);
+///
+/// let mut nodes = Vec::with_capacity(16);
+/// full_roots(30, &mut nodes);
+/// assert_eq!(nodes, [7, 19, 25, 28]);
+
 /// ```
 #[inline]
 pub fn full_roots(i: u64, nodes: &mut Vec<u64>) {
   assert!(
     is_even(i),
-    format!(
-      "You can only look up roots for depth 0 blocks, got index {}",
-      i
-    )
+    "You can only look up roots for depth 0 blocks, got index {}",
+    i
   );
   let mut tmp = i >> 1;
   let mut offset = 0;
@@ -323,18 +396,18 @@ mod tests {
 
   #[test]
   fn test_is_even() {
-    assert_eq!(is_even(0), true);
-    assert_eq!(is_even(1), false);
-    assert_eq!(is_even(2), true);
-    assert_eq!(is_even(3), false);
+    assert!(is_even(0));
+    assert!(!is_even(1));
+    assert!(is_even(2));
+    assert!(!is_even(3));
   }
 
   #[test]
   fn test_is_odd() {
-    assert_eq!(is_odd(0), false);
-    assert_eq!(is_odd(1), true);
-    assert_eq!(is_odd(2), false);
-    assert_eq!(is_odd(3), true);
+    assert!(!is_odd(0));
+    assert!(is_odd(1));
+    assert!(!is_odd(2));
+    assert!(is_odd(3));
   }
 
   #[test]

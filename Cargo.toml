@@ -1,12 +1,13 @@
 [package]
 name = "flat-tree"
-version = "5.0.0"
-description = "Rust module for encoding/decoding varints that doesn't do any IO. Inspired by the Node.js varint module"
-authors = ["Mathias Buus <mathiasbuus@gmail.com>"]
-repository = "https://github.com/mafintosh/flat-tree-rs"
+version = "6.0.0-beta.0"
+description = "Series of functions to map a binary tree to a list"
+authors = ["Mathias Buus <mathiasbuus@gmail.com>", "Timo Tiuraniemi <timo.tiuraniemi@iki.fi>"]
+repository = "https://github.com/datrs/flat-tree"
 keywords = ["flat", "tree", "binary"]
 readme = "README.md"
-license = "MIT"
+license = "MIT OR Apache-2.0"
+edition = "2021"
 
 [lib]
 bench = false

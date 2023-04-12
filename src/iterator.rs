@@ -104,6 +104,87 @@ impl Iterator {
     is_odd(self.offset)
   }
 
+  /// Check if the the iterator contains given index.
+  ///
+  /// ## Examples
+  /// ```rust
+  /// let iter = flat_tree::Iterator::new(3);
+  /// assert_eq!(iter.contains(0), true);
+  /// assert_eq!(iter.contains(1), true);
+  /// assert_eq!(iter.contains(2), true);
+  /// assert_eq!(iter.contains(3), true);
+  /// assert_eq!(iter.contains(4), true);
+  /// assert_eq!(iter.contains(5), true);
+  /// assert_eq!(iter.contains(6), true);
+  /// assert_eq!(iter.contains(7), false);
+  /// assert_eq!(iter.contains(8), false);
+  ///
+  /// let iter = flat_tree::Iterator::new(9);
+  /// assert_eq!(iter.contains(8), true);
+  /// assert_eq!(iter.contains(9), true);
+  /// assert_eq!(iter.contains(10), true);
+  /// assert_eq!(iter.contains(6), false);
+  /// assert_eq!(iter.contains(7), false);
+  /// assert_eq!(iter.contains(12), false);
+  /// assert_eq!(iter.contains(13), false);
+  ///
+  /// let iter = flat_tree::Iterator::new(8);
+  /// assert_eq!(iter.contains(8), true);
+  /// assert_eq!(iter.contains(6), false);
+  /// assert_eq!(iter.contains(7), false);
+  /// assert_eq!(iter.contains(9), false);
+  /// assert_eq!(iter.contains(10), false);
+  /// ```
+  #[inline]
+  #[allow(clippy::comparison_chain)]
+  pub fn contains(&self, index: u64) -> bool {
+    if index > self.index {
+      index < (self.index + self.factor / 2)
+    } else if index < self.index {
+      let comp = self.factor / 2;
+      self.index < comp || index > (self.index - comp)
+    } else {
+      true
+    }
+  }
+
+  /// Returns how many nodes are in the tree of the current position.
+  ///
+  /// ## Examples
+  /// ```rust
+  /// assert_eq!(flat_tree::Iterator::new(0).count_nodes(), 1);
+  /// assert_eq!(flat_tree::Iterator::new(1).count_nodes(), 3);
+  /// assert_eq!(flat_tree::Iterator::new(3).count_nodes(), 7);
+  /// assert_eq!(flat_tree::Iterator::new(5).count_nodes(), 3);
+  /// assert_eq!(flat_tree::Iterator::new(23).count_nodes(), 15);
+  /// assert_eq!(flat_tree::Iterator::new(27).count_nodes(), 7);
+  /// ```
+  #[inline]
+  pub fn count_nodes(&self) -> u64 {
+    if is_even(self.index) {
+      1
+    } else {
+      self.factor - 1
+    }
+  }
+
+  /// Returns how many leaves are in the tree of the current position.
+  ///
+  /// ## Examples
+  /// ```rust
+  /// assert_eq!(flat_tree::Iterator::new(0).count_leaves(), 1);
+  /// assert_eq!(flat_tree::Iterator::new(1).count_leaves(), 2);
+  /// assert_eq!(flat_tree::Iterator::new(2).count_leaves(), 1);
+  /// assert_eq!(flat_tree::Iterator::new(3).count_leaves(), 4);
+  /// assert_eq!(flat_tree::Iterator::new(5).count_leaves(), 2);
+  /// assert_eq!(flat_tree::Iterator::new(23).count_leaves(), 8);
+  /// assert_eq!(flat_tree::Iterator::new(27).count_leaves(), 4);
+  /// ```
+  #[inline]
+  pub fn count_leaves(&self) -> u64 {
+    (self.count_nodes() + 1) / 2
+  }
+
   /// Move the cursor and get the previous item from the current position.
   ///
   /// ## Examples
@@ -234,6 +315,89 @@ impl Iterator {
     self.offset = 2 * self.offset + 1;
     self.index
   }
+
+  /// Move to the next tree from the current position and return
+  /// new index.
+  ///
+  /// ## Examples
+  /// ```rust
+  /// assert_eq!(flat_tree::Iterator::new(0).next_tree(), 2);
+  /// assert_eq!(flat_tree::Iterator::new(1).next_tree(), 4);
+  /// assert_eq!(flat_tree::Iterator::new(3).next_tree(), 8);
+  /// assert_eq!(flat_tree::Iterator::new(7).next_tree(), 16);
+  /// ```
+  #[inline]
+  pub fn next_tree(&mut self) -> u64 {
+    self.index = self.index + self.factor / 2 + 1;
+    self.offset = self.index / 2;
+    self.factor = 2;
+    self.index
+  }
+
+  /// Move to the previous tree from the current position and return
+  /// new index.
+  ///
+  /// ## Examples
+  /// ```rust
+  /// assert_eq!(flat_tree::Iterator::new(0).prev_tree(), 0);
+  /// assert_eq!(flat_tree::Iterator::new(1).prev_tree(), 0);
+  /// assert_eq!(flat_tree::Iterator::new(2).prev_tree(), 0);
+  /// assert_eq!(flat_tree::Iterator::new(3).prev_tree(), 0);
+  /// assert_eq!(flat_tree::Iterator::new(7).prev_tree(), 0);
+  /// assert_eq!(flat_tree::Iterator::new(5).prev_tree(), 2);
+  /// assert_eq!(flat_tree::Iterator::new(9).prev_tree(), 6);
+  /// assert_eq!(flat_tree::Iterator::new(11).prev_tree(), 6);
+  /// ```
+  #[inline]
+  pub fn prev_tree(&mut self) -> u64 {
+    if self.offset == 0 {
+      self.index = 0;
+      self.factor = 2;
+    } else {
+      self.index = self.index - self.factor / 2 - 1;
+      self.offset = self.index / 2;
+      self.factor = 2;
+    }
+    self.index
+  }
+
+  /// Move cursor to the full root of given leaf index that the iterator
+  /// index is a part of. If the cursor is already there, nothing is
+  /// changed.
+  ///
+  /// Returns true if a full root exists (moved or not), false if
+  /// there are no full roots for the cursor or if given index is not a
+  /// leaf.
+  ///
+  /// See full_roots() for what is meant by a full root.
+  ///
+  /// ## Examples
+  /// ```rust
+  /// let mut iter = flat_tree::Iterator::new(0);
+  /// assert_eq!(iter.full_root(0), false);
+  /// assert_eq!(iter.full_root(22), true);
+  /// assert_eq!(iter.index(), 7);
+  /// assert_eq!(iter.next_tree(), 16);
+  /// assert_eq!(iter.full_root(22), true);
+  /// assert_eq!(iter.index(), 17);
+  /// assert_eq!(iter.next_tree(), 20);
+  /// assert_eq!(iter.full_root(22), true);
+  /// assert_eq!(iter.index(), 20);
+  /// assert_eq!(iter.next_tree(), 22);
+  /// assert_eq!(iter.full_root(22), false);
+  /// ```
+  #[inline]
+  pub fn full_root(&mut self, index: u64) -> bool {
+    if index <= self.index || is_odd(self.index) {
+      return false;
+    }
+    while index > self.index + self.factor + self.factor / 2 {
+      self.index += self.factor / 2;
+      self.factor *= 2;
+      self.offset /= 2;
+    }
+    true
+  }
 }
 
 impl iter::Iterator for Iterator {
@@ -259,7 +423,7 @@ fn two_pow(n: u64) -> u64 {
   if n < 31 {
     1 << n
   } else {
-    ((1 << 30) * (1 << (n - 30)))
+    (1 << 30) * (1 << (n - 30))
   }
 }
 
